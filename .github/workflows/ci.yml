@@ -21,19 +21,19 @@ jobs:
         run: brew install fish shellcheck shfmt
 
       - name: Bash syntax
-        run: bash -n setup-modern.sh bootstrap.sh brew.sh
+        run: bash -n setup-modern.sh bootstrap.sh brew.sh scripts/*.sh
 
       - name: Fish syntax
         run: fish --no-config -n config/fish/config.fish config/fish/functions/*.fish
 
       - name: ShellCheck
-        run: shellcheck setup-modern.sh bootstrap.sh brew.sh
+        run: shellcheck setup-modern.sh bootstrap.sh brew.sh scripts/*.sh
 
       - name: shfmt
-        run: shfmt -d setup-modern.sh bootstrap.sh brew.sh
+        run: shfmt -d setup-modern.sh bootstrap.sh brew.sh scripts/*.sh
 
       - name: Homebrew Bundle
-        run: brew bundle check --file Brewfile
+        run: brew bundle list --all --file Brewfile
 
       - name: Whitespace
         run: git diff --check

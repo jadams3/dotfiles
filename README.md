@@ -1,111 +1,75 @@
-# Mathias’s dotfiles
+# John's dotfiles
 
-![Screenshot of my shell prompt](https://i.imgur.com/EkEtphC.png)
+Personal macOS dotfiles for a fish-first shell, Homebrew Bundle-managed tools,
+Starship prompt, Ghostty, and a small set of modern command-line defaults.
 
-## Installation
+This repository started as a fork of Mathias Bynens's dotfiles. The legacy
+Bash/macOS files are still present for reference, but the maintained setup path
+is `setup-modern.sh` plus the files under `config/`.
 
-**Warning:** If you want to give these dotfiles a try, you should first fork this repository, review the code, and remove things you don’t want or need. Don’t blindly use my settings unless you know what that entails. Use at your own risk!
+## Setup
 
-### Using Git and the bootstrap script
-
-You can clone the repository wherever you want. (I like to keep it in `~/Projects/dotfiles`, with `~/dotfiles` as a symlink.) The bootstrapper script will pull in the latest version and copy the files to your home folder.
-
-```bash
-git clone https://github.com/mathiasbynens/dotfiles.git && cd dotfiles && source bootstrap.sh
-```
-
-To update, `cd` into your local `dotfiles` repository and then:
+Install Homebrew first, then run:
 
 ```bash
-source bootstrap.sh
+./setup-modern.sh
 ```
 
-Alternatively, to update while avoiding the confirmation prompt:
+The setup script installs packages from `Brewfile`, links `config/fish` to
+`~/.config/fish`, links `config/starship.toml`, links Ghostty config when
+Ghostty is present, and installs Pi via npm when npm is available.
+
+Useful setup options:
 
 ```bash
-set -- -f; source bootstrap.sh
+./setup-modern.sh --dry-run
+./setup-modern.sh --skip-brew
+./setup-modern.sh --skip-npm-global
 ```
 
-### Git-free install
+Existing files are moved to `~/.dotfiles-backup/<timestamp>/` before symlinks
+are created.
 
-To install these dotfiles without Git:
+To make fish your login shell after setup:
 
 ```bash
-cd; curl -#L https://github.com/mathiasbynens/dotfiles/tarball/master | tar -xzv --strip-components 1 --exclude={README.md,bootstrap.sh,.osx,LICENSE-MIT.txt}
+echo "$(command -v fish)" | sudo tee -a /etc/shells
+chsh -s "$(command -v fish)"
 ```
 
-To update later on, just run that command again.
+## Health Checks
 
-### Specify the `$PATH`
-
-If `~/.path` exists, it will be sourced along with the other files, before any feature testing (such as [detecting which version of `ls` is being used](https://github.com/mathiasbynens/dotfiles/blob/aff769fd75225d8f2e481185a71d5e05b76002dc/.aliases#L21-26)) takes place.
-
-Here’s an example `~/.path` file that adds `/usr/local/bin` to the `$PATH`:
+Run the local repository checks with:
 
 ```bash
-export PATH="/usr/local/bin:$PATH"
+./scripts/doctor.sh
 ```
 
-### Add custom commands without creating a new fork
+The doctor script checks Bash syntax, fish syntax, Homebrew Bundle state, and
+Git whitespace errors.
 
-If `~/.extra` exists, it will be sourced along with the other files. You can use this to add a few custom commands without the need to fork this entire repository, or to add commands you don’t want to commit to a public repository.
+## Repository Layout
 
-My `~/.extra` looks something like this:
+- `Brewfile`: Homebrew formulae and casks for the maintained setup.
+- `setup-modern.sh`: primary installer for a new Mac.
+- `config/fish/`: fish shell config and functions.
+- `config/starship.toml`: Starship prompt config.
+- `config/ghostty/`: Ghostty terminal config.
+- `bootstrap.sh`, `brew.sh`, `.macos`, and older Bash dotfiles: legacy upstream
+  files kept for reference. Review them before running; they are not the main
+  setup path.
 
-```bash
-# Git credentials
-# Not in the repository, to prevent people from accidentally committing under my name
-GIT_AUTHOR_NAME="Mathias Bynens"
-GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
-git config --global user.name "$GIT_AUTHOR_NAME"
-GIT_AUTHOR_EMAIL="mathias@mailinator.com"
-GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
-git config --global user.email "$GIT_AUTHOR_EMAIL"
-```
+## Upstream
 
-You could also use `~/.extra` to override settings, functions and aliases from my dotfiles repository. It’s probably better to [fork this repository](https://github.com/mathiasbynens/dotfiles/fork) instead, though.
+The `upstream` remote points to `mathiasbynens/dotfiles` for reference. This
+repo is maintained as a personal dotfiles repo, so upstream changes should be
+cherry-picked or ported deliberately instead of merged wholesale.
 
-### Sensible macOS defaults
+Useful upstream ideas already ported include modern Git defaults such as
+`push.default=simple`, `init.defaultBranch=main`, branch sorting by recent
+activity, and recursive submodule pulls.
 
-When setting up a new Mac, you may want to set some sensible macOS defaults:
+## License
 
-```bash
-./.macos
-```
-
-### Install Homebrew formulae
-
-When setting up a new Mac, you may want to install some common [Homebrew](https://brew.sh/) formulae (after installing Homebrew, of course):
-
-```bash
-./brew.sh
-```
-
-Some of the functionality of these dotfiles depends on formulae installed by `brew.sh`. If you don’t plan to run `brew.sh`, you should look carefully through the script and manually install any particularly important ones. A good example is Bash/Git completion: the dotfiles use a special version from Homebrew.
-
-## Feedback
-
-Suggestions/improvements
-[welcome](https://github.com/mathiasbynens/dotfiles/issues)!
-
-## Author
-
-| [![twitter/mathias](http://gravatar.com/avatar/24e08a9ea84deb17ae121074d0f17125?s=70)](http://twitter.com/mathias "Follow @mathias on Twitter") |
-|---|
-| [Mathias Bynens](https://mathiasbynens.be/) |
-
-## Thanks to…
-
-* @ptb and [his _macOS Setup_ repository](https://github.com/ptb/mac-setup)
-* [Ben Alman](http://benalman.com/) and his [dotfiles repository](https://github.com/cowboy/dotfiles)
-* [Cătălin Mariș](https://github.com/alrra) and his [dotfiles repository](https://github.com/alrra/dotfiles)
-* [Gianni Chiappetta](https://butt.zone/) for sharing his [amazing collection of dotfiles](https://github.com/gf3/dotfiles)
-* [Jan Moesen](http://jan.moesen.nu/) and his [ancient `.bash_profile`](https://gist.github.com/1156154) + [shiny _tilde_ repository](https://github.com/janmoesen/tilde)
-* [Lauri ‘Lri’ Ranta](http://lri.me/) for sharing [loads of hidden preferences](http://osxnotes.net/defaults.html)
-* [Matijs Brinkhuis](https://matijs.brinkhu.is/) and his [dotfiles repository](https://github.com/matijs/dotfiles)
-* [Nicolas Gallagher](http://nicolasgallagher.com/) and his [dotfiles repository](https://github.com/necolas/dotfiles)
-* [Sindre Sorhus](https://sindresorhus.com/)
-* [Tom Ryder](https://sanctum.geek.nz/) and his [dotfiles repository](https://sanctum.geek.nz/cgit/dotfiles.git/about)
-* [Kevin Suttle](http://kevinsuttle.com/) and his [dotfiles repository](https://github.com/kevinSuttle/dotfiles) and [macOS-Defaults project](https://github.com/kevinSuttle/macOS-Defaults), which aims to provide better documentation for [`~/.macos`](https://mths.be/macos)
-* [Haralan Dobrev](https://hkdobrev.com/)
-* Anyone who [contributed a patch](https://github.com/mathiasbynens/dotfiles/contributors) or [made a helpful suggestion](https://github.com/mathiasbynens/dotfiles/issues)
+This repository retains the original MIT license from the upstream fork. See
+`LICENSE-MIT.txt`.

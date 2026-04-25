@@ -48,10 +48,70 @@ Run the local repository checks with:
 The doctor script checks Bash syntax, fish syntax, Homebrew Bundle state, and
 Git whitespace errors.
 
+## Obsidian + QMD
+
+Obsidian is installed through Homebrew, and QMD is installed through npm as
+`@tobilu/qmd` from `github.com/tobi/qmd`. That is the actively maintained QMD
+line used by the current docs and Obsidian plugin. QMD provides local keyword,
+vector, and hybrid search over Markdown notes.
+
+The default local vault path for this setup is:
+
+```text
+~/Documents/Obsidian/Personal Knowledge
+```
+
+Use Obsidian Sync as the source of truth for vault contents across Macs. Create
+or connect the remote vault from inside Obsidian, then sync it to the same local
+path on each Mac. Do not put the same vault inside iCloud, Dropbox, OneDrive, or
+a Git checkout while using Obsidian Sync.
+
+After Obsidian Sync finishes on a Mac, register the vault with QMD:
+
+```bash
+./scripts/qmd-vault.sh
+```
+
+The script expects the vault folder to already exist. Create or connect it from
+Obsidian first so Sync owns the vault lifecycle.
+
+Generate vector embeddings when you are ready for the first model download:
+
+```bash
+./scripts/qmd-vault.sh --embed
+```
+
+Search the knowledge repository:
+
+```bash
+qmd search "agentic development" -c personal-knowledge
+qmd vsearch "ideas for building better coding agents" -c personal-knowledge
+qmd query "how should I build reusable agent skills?" -c personal-knowledge
+```
+
+Update QMD when new releases land:
+
+```bash
+./scripts/update-qmd.sh
+```
+
+Check the installed version and npm's latest version:
+
+```bash
+qmd --version
+npm view @tobilu/qmd version dist-tags.latest repository.url
+```
+
+The QMD Semantic Search community plugin can be installed from Obsidian after
+Sync is configured. Keep the QMD binary path as `qmd` unless your shell cannot
+find npm global binaries.
+
 ## Repository Layout
 
 - `Brewfile`: Homebrew formulae and casks for the maintained setup.
 - `setup-modern.sh`: primary installer for a new Mac.
+- `scripts/qmd-vault.sh`: registers the Obsidian vault as a QMD collection.
+- `scripts/update-qmd.sh`: updates the QMD CLI from npm.
 - `config/fish/`: fish shell config and functions.
 - `config/starship.toml`: Starship prompt config.
 - `config/ghostty/`: Ghostty terminal config.

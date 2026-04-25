@@ -98,8 +98,14 @@ fi
 if [ "$SKIP_NPM_GLOBAL" -eq 0 ]; then
 	if command -v npm >/dev/null 2>&1; then
 		run npm install -g @mariozechner/pi-coding-agent
+		run npm install -g @tobilu/qmd
+
+		if command -v qmd >/dev/null 2>&1; then
+			run mkdir -p "${XDG_CACHE_HOME:-${HOME}/.cache}/qmd"
+			qmd --version
+		fi
 	else
-		echo "npm was not found. Install Node and rerun this script to install Pi." >&2
+		echo "npm was not found. Install Node and rerun this script to install npm global tools." >&2
 	fi
 fi
 

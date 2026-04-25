@@ -22,6 +22,7 @@ brew "neovim"
 brew "node"
 brew "mise"
 brew "bun"
+brew "sqlite"
 brew "shellcheck"
 brew "shfmt"
 
@@ -30,6 +31,7 @@ brew "openclaw-cli"
 
 cask "claude"
 cask "codex"
+cask "obsidian"
 
 # Terminal font with Nerd Font glyphs for Starship, eza icons, and prompt symbols.
 cask "font-jetbrains-mono-nerd-font"
